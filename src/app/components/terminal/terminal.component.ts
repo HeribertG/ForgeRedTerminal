@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ElectronService } from '../../services/electron.service';
@@ -10,7 +10,7 @@ import { ElectronService } from '../../services/electron.service';
   templateUrl: './terminal.component.html',
   styleUrls: ['./terminal.component.scss']
 })
-export class TerminalComponent implements OnInit {
+export class TerminalComponent implements OnInit, AfterViewInit {
   @ViewChild('terminalScroll', { static: false }) terminalScroll!: ElementRef;
 
   currentCommand = '';
@@ -20,6 +20,8 @@ export class TerminalComponent implements OnInit {
   historyIndex = -1;
   isProcessing = false;
   commandCount = 0;
+  private isUserScrolling = false;
+  private scrollTimeout: any;
 
   constructor(private electronService: ElectronService) { }
 
@@ -27,11 +29,15 @@ export class TerminalComponent implements OnInit {
     await this.initializeTerminal();
   }
 
+  ngAfterViewInit() {
+    this.setupScrollListener();
+    this.scrollToBottom(true);
+  }
+
   private async initializeTerminal() {
     this.terminalOutput = [
       '╔══════════════════════════════════════════════════════════════╗',
       '║            🖥️ ForgeRed Terminal gestartet                    ║',
-      '║         ⚡ Echte Systembefehle werden unterstützt!          ║',
       '╚══════════════════════════════════════════════════════════════╝',
       ''
     ];
@@ -74,7 +80,7 @@ export class TerminalComponent implements OnInit {
     this.commandCount++;
 
     // Auto-scroll nach kurzer Verzögerung
-    setTimeout(() => this.scrollToBottom(), 100);
+    this.scrollToBottom(true);
 
     try {
       // Spezielle interne Befehle
@@ -117,7 +123,7 @@ export class TerminalComponent implements OnInit {
 
     this.isProcessing = false;
     this.terminalOutput.push('');
-    this.scrollToBottom();
+    t this.scrollToBottom(true);
   }
 
   private async executeSystemCommand(command: string) {
@@ -137,6 +143,8 @@ export class TerminalComponent implements OnInit {
           }
         });
       }
+
+      this.scrollToBottom(true);
 
       if (result.error) {
         const errorLines = result.error.split('\n');
@@ -208,12 +216,37 @@ export class TerminalComponent implements OnInit {
     return `${this.currentWorkingDirectory}> `;
   }
 
-  private scrollToBottom() {
-    setTimeout(() => {
-      if (this.terminalScroll) {
-        this.terminalScroll.nativeElement.scrollTop = this.terminalScroll.nativeElement.scrollHeight;
-      }
-    }, 50);
+  private scrollToBottom(force: boolean = false) {
+    if (!this.isUserScrolling || force) {
+      setTimeout(() => {
+        if (this.terminalScroll?.nativeElement) {
+          const element = this.terminalScroll.nativeElement;
+          element.scrollTop = element.scrollHeight;
+        }
+      }, 50);
+    }
+  }
+
+  private setupScrollListener() {
+    if (this.terminalScroll?.nativeElement) {
+      const element = this.terminalScroll.nativeElement;
+
+      element.addEventListener('scroll', () => {
+        this.isUserScrolling = true;
+
+        // Reset user scrolling flag nach 2 Sekunden
+        clearTimeout(this.scrollTimeout);
+        this.scrollTimeout = setTimeout(() => {
+          this.isUserScrolling = false;
+        }, 2000);
+
+        // Prüfe ob User am Ende ist
+        const isAtBottom = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
+        if (isAtBottom) {
+          this.isUserScrolling = false;
+        }
+      });
+    }
   }
 
   onKeyDown(event: KeyboardEvent) {
@@ -239,5 +272,9 @@ export class TerminalComponent implements OnInit {
 
   clearTerminal() {
     this.terminalOutput = [];
+  }
+
+  public scrollToEnd() {
+    this.scrollToBottom(true);
   }
 }

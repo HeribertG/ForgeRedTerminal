@@ -8,6 +8,9 @@
       <button class="control-btn" (click)="clearTerminal()" title="Terminal leeren">
         🧹
       </button>
+      <button class="control-btn" (click)="scrollToEnd()" title="Zum Ende springen">
+        ⬇️
+      </button>
       <span class="command-counter">{{ commandCount }} Befehle</span>
       <span class="status-indicator" [class.processing]="isProcessing">
         {{ isProcessing ? '⏳ Verarbeitung...' : '✅ Bereit' }}
@@ -26,7 +29,7 @@
         (keyup.enter)="executeCommand(currentCommand)"
         (keydown)="onKeyDown($event)"
         placeholder="Befehl eingeben..."
-        class="command-input"
+        class="command-input terminal-input"
         autocomplete="off">
     </div>
     <div class="processing-line" *ngIf="isProcessing">

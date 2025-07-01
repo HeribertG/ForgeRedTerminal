@@ -1,1 +1,238 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+// Font Variables
+:root {
+    // UI Fonts (für Interface-Elemente)
+    --font-primary: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --font-secondary: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+
+    // Terminal Fonts (für Code/Terminal)
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+
+    --font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
+
+    // Font Weights
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    // Font Sizes
+    --font-size-xs: 0.75rem; // 12px
+    --font-size-sm: 0.875rem; // 14px
+    --font-size-base: 1rem; // 16px
+    --font-size-lg: 1.125rem; // 18px
+    --font-size-xl: 1.25rem; // 20px
+    --font-size-2xl: 1.5rem; // 24px
+    --font-size-3xl: 1.875rem; // 30px
+}
+
+// Global Styles
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px; // Base font size
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-normal);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    color: #ffffff;
+    background-color: #1a1a1a;
+    overflow: hidden;
+}
+
+// Typography Classes
+.font-primary {
+    font-family: var(--font-primary);
+}
+
+.font-secondary {
+    font-family: var(--font-secondary);
+}
+
+.font-mono {
+    font-family: var(--font-mono);
+}
+
+// Font Weight Classes
+.font-light {
+    font-weight: var(--font-weight-light);
+}
+
+.font-normal {
+    font-weight: var(--font-weight-normal);
+}
+
+.font-medium {
+    font-weight: var(--font-weight-medium);
+}
+
+.font-semibold {
+    font-weight: var(--font-weight-semibold);
+}
+
+.font-bold {
+    font-weight: var(--font-weight-bold);
+}
+
+// Font Size Classes
+.text-xs {
+    font-size: var(--font-size-xs);
+}
+
+.text-sm {
+    font-size: var(--font-size-sm);
+}
+
+.text-base {
+    font-size: var(--font-size-base);
+}
+
+.text-lg {
+    font-size: var(--font-size-lg);
+}
+
+.text-xl {
+    font-size: var(--font-size-xl);
+}
+
+.text-2xl {
+    font-size: var(--font-size-2xl);
+}
+
+.text-3xl {
+    font-size: var(--font-size-3xl);
+}
+
+// Headings
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+    margin: 0;
+}
+
+h1 {
+    font-size: var(--font-size-3xl);
+}
+
+h2 {
+    font-size: var(--font-size-2xl);
+}
+
+h3 {
+    font-size: var(--font-size-xl);
+}
+
+h4 {
+    font-size: var(--font-size-lg);
+}
+
+h5 {
+    font-size: var(--font-size-base);
+}
+
+h6 {
+    font-size: var(--font-size-sm);
+}
+
+// Button Styles
+button {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+// Input Styles
+input,
+textarea,
+select {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+}
+
+// Code Elements (außer Terminal)
+code,
+pre {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+}
+
+// Terminal-spezifische Klassen
+.terminal,
+.terminal * {
+    font-family: var(--font-mono) !important;
+}
+
+.terminal-text {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
+}
+
+// Smooth Scrollbar für alle Elemente außer Terminal
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2d2d2d;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555555;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #777777;
+}
+
+// Utilities
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// .select-none {
+//   user-select: none;
+// }
+
+// .select-all {
+//   user-select: all;
+// }

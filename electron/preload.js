@@ -2,9 +2,13 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 // Sichere API für Angular
 contextBridge.exposeInMainWorld('electronAPI', {
-  // Befehle ausführen
+  // Standard CMD Befehle
   executeCommand: (command, workingDir) => 
     ipcRenderer.invoke('execute-command', command, workingDir),
+  
+  // PowerShell Befehle (für bessere Unicode-Unterstützung)
+  executePowerShell: (command, workingDir) => 
+    ipcRenderer.invoke('execute-powershell', command, workingDir),
   
   // Verzeichnis-Operationen
   getCurrentWorkingDirectory: () => 

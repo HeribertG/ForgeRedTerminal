@@ -4,6 +4,7 @@
     flex-direction: column;
     background-color: #1e1e1e;
     position: relative;
+    height: 100%; // Wichtig für Scrolling
 }
 
 .terminal-header {
@@ -14,6 +15,8 @@
     color: #ffffff;
     padding: 0.5rem 1rem;
     border-bottom: 1px solid #404040;
+    font-family: var(--font-primary);
+    flex-shrink: 0; // Header nimmt nicht am Flex teil
 }
 
 .terminal-title {
@@ -22,6 +25,7 @@
     gap: 0.5rem;
     font-weight: 600;
     font-size: 0.9rem;
+    font-family: var(--font-primary);
 }
 
 .terminal-icon {
@@ -32,6 +36,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    font-family: var(--font-primary);
 }
 
 .control-btn {
@@ -42,6 +47,7 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.9rem;
+    font-family: var(--font-primary);
     transition: all 0.2s ease;
 }
 
@@ -53,32 +59,59 @@
 .command-counter {
     font-size: 0.8rem;
     color: #cccccc;
+    font-family: var(--font-primary);
 }
 
 .status-indicator {
     font-size: 0.8rem;
     color: #4caf50;
+    font-family: var(--font-primary);
 }
 
 .status-indicator.processing {
     color: #ff9800;
 }
 
+// KRITISCH: Terminal Content Scrolling
 .terminal-content {
-    flex: 1;
+    flex: 1; // Nimmt den verfügbaren Platz
     background-color: #000000;
     color: #00ff00;
     padding: 1rem;
-    overflow-y: auto;
-    font-family: 'Consolas', 'Courier New', monospace;
-    font-size: 14px;
-    line-height: 1.4;
+
+    // SCROLLING PROPERTIES
+    overflow-y: auto; // Vertikales Scrolling aktivieren
+    overflow-x: auto; // Horizontales Scrolling für lange Zeilen
+    height: 0; // Trick: Flex mit height 0 zwingt overflow
+    max-height: 100%; // Begrenze Höhe
+
+    // TERMINAL FONT
+    font-family: var(--font-terminal) !important;
+    font-size: var(--terminal-font-size) !important;
+    line-height: var(--terminal-line-height) !important;
+    letter-spacing: var(--terminal-letter-spacing) !important;
+    font-feature-settings: "liga" 0 !important;
+    font-variant-ligatures: none !important;
+
+    // SCROLL BEHAVIOR
+    scroll-behavior: smooth; // Sanftes Scrolling
+
+    // TEXT PROPERTIES
+    white-space: pre-wrap; // Behält Whitespace, aber wrapped
+    word-wrap: break-word;
+    word-break: normal; // Ändere zu normal für besseres Wrapping
 }
 
 .terminal-line {
     margin-bottom: 0.2rem;
     white-space: pre-wrap;
     word-wrap: break-word;
+
+    // Terminal-Font erzwingen
+    font-family: var(--font-terminal) !important;
+    font-size: var(--terminal-font-size) !important;
+    line-height: var(--terminal-line-height) !important;
+    letter-spacing: var(--terminal-letter-spacing) !important;
 }
 
 .input-line,
@@ -86,48 +119,112 @@
     display: flex;
     align-items: center;
     margin-top: 1rem;
+    flex-shrink: 0; // Input-Line bleibt immer sichtbar
 }
 
 .prompt {
     color: #00ff00;
     margin-right: 0.5rem;
     white-space: nowrap;
-    font-weight: bold;
+    font-weight: 500;
+
+    // Terminal-Font erzwingen
+    font-family: var(--font-terminal) !important;
+    font-size: var(--terminal-font-size) !important;
+    line-height: var(--terminal-line-height) !important;
+    letter-spacing: var(--terminal-letter-spacing) !important;
 }
 
 .command-input {
     background: transparent;
     border: none;
     color: #00ff00;
-    font-family: inherit;
-    font-size: inherit;
     outline: none;
     flex: 1;
+
+    // KRITISCH: Terminal-Font für Input
+    font-family: var(--font-terminal) !important;
+    font-size: var(--terminal-font-size) !important;
+    line-height: var(--terminal-line-height) !important;
+    letter-spacing: var(--terminal-letter-spacing) !important;
+    font-weight: 400 !important;
 }
 
 .command-input::placeholder {
     color: #666;
+    font-family: var(--font-terminal) !important;
+    font-size: var(--terminal-font-size) !important;
 }
 
 .processing-text {
     color: #ff9800;
     font-style: italic;
+
+    // Terminal-Font
+    font-family: var(--font-terminal) !important;
+    font-size: var(--terminal-font-size) !important;
+    line-height: var(--terminal-line-height) !important;
 }
 
-/* Scrollbar styling */
+/* VERBESSERTE SCROLLBAR für Terminal */
 .terminal-content::-webkit-scrollbar {
-    width: 8px;
+    width: 12px; // Breitere Scrollbar für bessere Usability
+    height: 12px;
 }
 
 .terminal-content::-webkit-scrollbar-track {
-    background: #2d2d2d;
+    background: #1a1a1a;
+    border-radius: 6px;
+    border: 1px solid #333;
 }
 
 .terminal-content::-webkit-scrollbar-thumb {
-    background: #555555;
-    border-radius: 4px;
+    background: linear-gradient(180deg, #00ff00, #00cc00);
+    border-radius: 6px;
+    border: 1px solid #004400;
+    box-shadow: inset 0 0 3px rgba(0, 255, 0, 0.3);
 }
 
 .terminal-content::-webkit-scrollbar-thumb:hover {
-    background: #777777;
+    background: linear-gradient(180deg, #00ff33, #00dd00);
+    box-shadow: inset 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.terminal-content::-webkit-scrollbar-corner {
+    background: #1a1a1a;
+}
+
+/* Scrollbar für Firefox */
+.terminal-content {
+    scrollbar-width: thin;
+    scrollbar-color: #00ff00 #1a1a1a;
+}
+
+/* Wichtig: Alle Kinder des Terminals */
+.terminal-content * {
+    font-family: var(--font-terminal) !important;
+    font-size: var(--terminal-font-size) !important;
+    line-height: var(--terminal-line-height) !important;
+    letter-spacing: var(--terminal-letter-spacing) !important;
+}
+
+/* Scroll-Indikator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 80px;
+    right: 20px;
+    background: rgba(0, 255, 0, 0.8);
+    color: #000;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-family: var(--font-primary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.scroll-indicator.visible {
+    opacity: 1;
 }

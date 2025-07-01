@@ -4,6 +4,7 @@ declare global {
   interface Window {
     electronAPI: {
       executeCommand: (command: string, workingDir: string) => Promise<any>;
+      executePowerShell: (command: string, workingDir: string) => Promise<any>;
       getCurrentWorkingDirectory: () => Promise<string>;
       changeDirectory: (newDir: string) => Promise<any>;
       getSystemInfo: () => Promise<any>;
@@ -54,11 +55,44 @@ export class ElectronService {
 
   async executeCommand(command: string, workingDir: string): Promise<any> {
     if (!this.isElectron) {
-      throw new Error('Electron nicht verfügbar - Befehle können nur in der Desktop-App ausgeführt werden');
+      throw new Error('Electron nicht verfügbar');
+    }
+
+    // Für Windows: Immer PowerShell verwenden
+    if (this.isWindows()) {
+      try {
+        const psCommand = this.convertToPowerShell(command);
+        return await window.electronAPI.executePowerShell(psCommand, workingDir);
+      } catch (error) {
+        // Fallback zu CMD
+        return await window.electronAPI.executeCommand(command, workingDir);
+      }
     }
 
     return await window.electronAPI.executeCommand(command, workingDir);
   }
+
+  private convertToPowerShell(command: string): string {
+    const cmd = command.toLowerCase().trim();
+
+    switch (cmd) {
+      case 'dir':
+        return 'Get-ChildItem';
+      case 'systeminfo':
+        return 'systeminfo';
+      default:
+        return command;
+    }
+  }
+
+  private shouldUsePowerShell(command: string): boolean {
+    // Verwende PowerShell für Befehle die Umlaute ausgeben könnten
+    const powershellCommands = ['dir', 'ls', 'get-childitem', 'systeminfo', 'tasklist'];
+    const cmd = command.toLowerCase().split(' ')[0];
+    return powershellCommands.includes(cmd);
+  }
+
+
 
   async getCurrentWorkingDirectory(): Promise<string> {
     if (!this.isElectron) {
