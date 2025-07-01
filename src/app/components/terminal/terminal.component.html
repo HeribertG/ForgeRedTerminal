@@ -1,0 +1,37 @@
+<div class="terminal-container">
+  <div class="terminal-header">
+    <div class="terminal-title">
+      <span class="terminal-icon">⚡</span>
+      <span>Terminal</span>
+    </div>
+    <div class="terminal-controls">
+      <button class="control-btn" (click)="clearTerminal()" title="Terminal leeren">
+        🧹
+      </button>
+      <span class="command-counter">{{ commandCount }} Befehle</span>
+      <span class="status-indicator" [class.processing]="isProcessing">
+        {{ isProcessing ? '⏳ Verarbeitung...' : '✅ Bereit' }}
+      </span>
+    </div>
+  </div>
+  
+  <div class="terminal-content" #terminalScroll>
+    <div *ngFor="let line of terminalOutput" class="terminal-line">
+      {{ line }}
+    </div>
+    <div class="input-line" *ngIf="!isProcessing">
+      <span class="prompt">{{ getPrompt() }}</span>
+      <input 
+        [(ngModel)]="currentCommand" 
+        (keyup.enter)="executeCommand(currentCommand)"
+        (keydown)="onKeyDown($event)"
+        placeholder="Befehl eingeben..."
+        class="command-input"
+        autocomplete="off">
+    </div>
+    <div class="processing-line" *ngIf="isProcessing">
+      <span class="prompt">{{ getPrompt() }}</span>
+      <span class="processing-text">⏳ Befehl wird ausgeführt...</span>
+    </div>
+  </div>
+</div>

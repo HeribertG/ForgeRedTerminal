@@ -1,12 +1,18 @@
 {
   "name": "forge-red-terminal",
   "version": "0.0.0",
+  "main": "dist/electron/main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build-electron": "if not exist dist\\electron mkdir dist\\electron && npx tsc electron/main.ts --outDir dist/electron --target es2018 --module commonjs --skipLibCheck && copy electron\\preload.js dist\\electron\\",
+    "electron": "npm run build-electron && npx electron .",
+    "electron-dev": "npm run build-electron && concurrently \"ng serve\" \"wait-on http://localhost:4200 && npx electron .\"",
+    "start-electron": "concurrently \"ng serve\" \"npm run wait-and-electron\"",
+    "wait-and-electron": "wait-on http://localhost:4200 && npm run build-electron && npx electron ."
   },
   "private": true,
   "dependencies": {
@@ -17,8 +23,13 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@xterm/addon-fit": "^0.10.0",
+    "concurrently": "^9.2.0",
+    "electron": "^37.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "wait-on": "^8.0.3",
+    "xterm": "^5.3.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -26,6 +37,7 @@
     "@angular/cli": "^19.2.15",
     "@angular/compiler-cli": "^19.2.0",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^24.0.8",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

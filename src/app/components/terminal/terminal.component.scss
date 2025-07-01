@@ -1,0 +1,133 @@
+.terminal-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #1e1e1e;
+    position: relative;
+}
+
+.terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #2d2d2d, #3d3d3d);
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #404040;
+}
+
+.terminal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.terminal-icon {
+    font-size: 1.1rem;
+}
+
+.terminal-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.control-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #ffffff;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.command-counter {
+    font-size: 0.8rem;
+    color: #cccccc;
+}
+
+.status-indicator {
+    font-size: 0.8rem;
+    color: #4caf50;
+}
+
+.status-indicator.processing {
+    color: #ff9800;
+}
+
+.terminal-content {
+    flex: 1;
+    background-color: #000000;
+    color: #00ff00;
+    padding: 1rem;
+    overflow-y: auto;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.terminal-line {
+    margin-bottom: 0.2rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.input-line,
+.processing-line {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.prompt {
+    color: #00ff00;
+    margin-right: 0.5rem;
+    white-space: nowrap;
+    font-weight: bold;
+}
+
+.command-input {
+    background: transparent;
+    border: none;
+    color: #00ff00;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    flex: 1;
+}
+
+.command-input::placeholder {
+    color: #666;
+}
+
+.processing-text {
+    color: #ff9800;
+    font-style: italic;
+}
+
+/* Scrollbar styling */
+.terminal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal-content::-webkit-scrollbar-track {
+    background: #2d2d2d;
+}
+
+.terminal-content::-webkit-scrollbar-thumb {
+    background: #555555;
+    border-radius: 4px;
+}
+
+.terminal-content::-webkit-scrollbar-thumb:hover {
+    background: #777777;
+}
