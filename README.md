@@ -1,59 +1,102 @@
-# ForgeRedTerminal
+echo "# 🖥️ ForgeRed Terminal
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.15.
+Eine moderne Terminal-Anwendung mit echten Systembefehlen, entwickelt mit Angular und Electron.
 
-## Development server
+## ✨ Features
 
-To start a local development server, run:
+- 🔥 **Echte Systembefehle** - Keine Simulation, sondern echte CMD/Terminal-Integration
+- 🖥️ **Cross-Platform** - Funktioniert auf Windows, Mac und Linux  
+- 🎨 **Moderne UI** - Professionelles Design mit dunklem Theme
+- ⚡ **Electron-powered** - Desktop-App mit nativen Fenster-Controls
+- 📂 **Arbeitsverzeichnis-Management** - CD-Befehle funktionieren wirklich
+- 🔄 **Befehlshistorie** - ↑/↓ Pfeiltasten für vorherige Befehle
+- 🚀 **Schnellbefehle** - Kategorisierte Buttons für häufige Befehle
+- 📊 **Live-Monitoring** - System-Stats im Footer
 
-```bash
-ng serve
-```
+## 🛠️ Technologien
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Frontend:** Angular 19 + TypeScript
+- **Desktop:** Electron 37
+- **Styling:** SCSS + CSS Grid/Flexbox
+- **IPC:** Sichere Kommunikation zwischen Renderer und Main Process
 
-## Code scaffolding
+## 🚀 Installation & Start
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+\`\`\`bash
+# Repository klonen
+git clone https://github.com/DEIN-USERNAME/ForgeRedTerminal.git
+cd ForgeRedTerminal
 
-```bash
-ng generate component component-name
-```
+# Dependencies installieren
+npm install
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+# Development starten
+npm run electron-dev
+\`\`\`
 
-```bash
-ng generate --help
-```
+## 📝 Verfügbare Befehle
 
-## Building
+### Navigation
+- \`dir\` / \`ls\` - Verzeichnisinhalt anzeigen
+- \`cd <pfad>\` - Verzeichnis wechseln
+- \`pwd\` - Aktuellen Pfad anzeigen
 
-To build the project run:
+### System
+- \`systeminfo\` - Systeminformationen
+- \`tasklist\` / \`ps\` - Laufende Prozesse
+- \`ipconfig\` / \`ifconfig\` - Netzwerkkonfiguration
 
-```bash
-ng build
-```
+### Terminal
+- \`help\` - Hilfe anzeigen
+- \`clear\` / \`cls\` - Terminal leeren
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 📦 Build
 
-## Running unit tests
+\`\`\`bash
+# Electron App builden
+npm run build-electron
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+# Für Produktion
+npm run electron
+\`\`\`
 
-```bash
-ng test
-```
+## 🎯 Projektstruktur
 
-## Running end-to-end tests
+\`\`\`
+ForgeRedTerminal/
+├── src/
+│   ├── app/
+│   │   ├── components/
+│   │   │   ├── header/
+│   │   │   ├── nav/
+│   │   │   ├── terminal/
+│   │   │   └── footer/
+│   │   └── services/
+│   │       └── electron.service.ts
+├── electron/
+│   ├── main.ts
+│   └── preload.js
+└── dist/
+    └── electron/
+\`\`\`
 
-For end-to-end (e2e) testing, run:
+## 🤝 Contributing
 
-```bash
-ng e2e
-```
+Contributions sind willkommen! Bitte:
+1. Fork das Repository
+2. Erstelle einen Feature Branch
+3. Committe deine Änderungen
+4. Push zum Branch
+5. Erstelle einen Pull Request
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## 📄 Lizenz
 
-## Additional Resources
+MIT License - siehe [LICENSE](LICENSE) Datei
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 👨‍💻 Autor
+
+Entwickelt mit ❤️ für die Developer-Community
+
+---
+
+⭐ **Star das Repository**, wenn es dir gefällt!" > README.md
