@@ -60,7 +60,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
 
     this.terminalOutput.push('');
     this.terminalOutput.push('Verfügbare Features:');
-    this.terminalOutput.push('  • 💾 Echte Systembefehle (dir, cd, systeminfo, etc.)');
+    this.terminalOutput.push('  • 💾 Systembefehle (dir, cd, systeminfo, etc.)');
     this.terminalOutput.push('  • 📂 Arbeitsverzeichnis-Management');
     this.terminalOutput.push('  • 🔄 Befehlshistorie (↑/↓ Pfeiltasten)');
     this.terminalOutput.push('  • 🚀 Schnellbefehle über Navigation');
@@ -79,11 +79,11 @@ export class TerminalComponent implements OnInit, AfterViewInit {
     this.isProcessing = true;
     this.commandCount++;
 
-    // Auto-scroll nach kurzer Verzögerung
+
     this.scrollToBottom(true);
 
     try {
-      // Spezielle interne Befehle
+
       if (cmd.toLowerCase() === 'clear' || cmd.toLowerCase() === 'cls') {
         this.terminalOutput = [];
         this.isProcessing = false;
@@ -96,7 +96,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      // CD Befehl separat behandeln
+
       if (cmd.toLowerCase().startsWith('cd ')) {
         await this.handleChangeDirectory(cmd.substring(3).trim());
         this.isProcessing = false;
@@ -109,11 +109,11 @@ export class TerminalComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      // Echte Systembefehle
+
       if (this.electronService.isElectron) {
         await this.executeSystemCommand(cmd);
       } else {
-        this.terminalOutput.push('❌ Echte Systembefehle nur in Electron verfügbar');
+        this.terminalOutput.push('❌ Systembefehle nur in Electron verfügbar');
         this.terminalOutput.push('💡 Starte die App mit: npm run electron-dev');
       }
 
@@ -123,7 +123,7 @@ export class TerminalComponent implements OnInit, AfterViewInit {
 
     this.isProcessing = false;
     this.terminalOutput.push('');
-    t this.scrollToBottom(true);
+    this.scrollToBottom(true);
   }
 
   private async executeSystemCommand(command: string) {
@@ -132,7 +132,6 @@ export class TerminalComponent implements OnInit, AfterViewInit {
 
       const result = await this.electronService.executeCommand(command, this.currentWorkingDirectory);
 
-      // Entferne "Ausführung..." Zeile
       this.terminalOutput.pop();
 
       if (result.output) {
@@ -233,14 +232,11 @@ export class TerminalComponent implements OnInit, AfterViewInit {
 
       element.addEventListener('scroll', () => {
         this.isUserScrolling = true;
-
-        // Reset user scrolling flag nach 2 Sekunden
         clearTimeout(this.scrollTimeout);
         this.scrollTimeout = setTimeout(() => {
           this.isUserScrolling = false;
         }, 2000);
 
-        // Prüfe ob User am Ende ist
         const isAtBottom = element.scrollHeight - element.clientHeight <= element.scrollTop + 1;
         if (isAtBottom) {
           this.isUserScrolling = false;

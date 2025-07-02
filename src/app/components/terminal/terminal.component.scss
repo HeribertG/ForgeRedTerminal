@@ -116,15 +116,17 @@
 
 .input-line,
 .processing-line {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem;
+    /* Space between prompt and input */
     align-items: center;
     margin-top: 1rem;
-    flex-shrink: 0; // Input-Line bleibt immer sichtbar
 }
 
 .prompt {
     color: #00ff00;
-    margin-right: 0.5rem;
+    /* margin-right is replaced by gap property on the parent */
     white-space: nowrap;
     font-weight: 500;
 
@@ -140,10 +142,10 @@
     border: none;
     color: #00ff00;
     outline: none;
-    flex: 1;
+    width: 100% important;
 
     // KRITISCH: Terminal-Font für Input
-    font-family: var(--font-terminal) !important;
+    font-family: var(--font-mono) !important;
     font-size: var(--terminal-font-size) !important;
     line-height: var(--terminal-line-height) !important;
     letter-spacing: var(--terminal-letter-spacing) !important;
@@ -152,7 +154,7 @@
 
 .command-input::placeholder {
     color: #666;
-    font-family: var(--font-terminal) !important;
+    font-family: var(--font-mono) !important;
     font-size: var(--terminal-font-size) !important;
 }
 
@@ -161,7 +163,7 @@
     font-style: italic;
 
     // Terminal-Font
-    font-family: var(--font-terminal) !important;
+    font-family: var(--font-mono) !important;
     font-size: var(--terminal-font-size) !important;
     line-height: var(--terminal-line-height) !important;
 }
@@ -202,7 +204,7 @@
 
 /* Wichtig: Alle Kinder des Terminals */
 .terminal-content * {
-    font-family: var(--font-terminal) !important;
+    font-family: var(--font-mono) !important;
     font-size: var(--terminal-font-size) !important;
     line-height: var(--terminal-line-height) !important;
     letter-spacing: var(--terminal-letter-spacing) !important;

@@ -1,28 +1,31 @@
-<nav class="nav">
+<!-- navigation.component.html -->
+<nav class="navigation">
+  <!-- Fester Header -->
   <div class="nav-header">
-    <h3>💾 Gespeicherte Befehle</h3>
+    <h3>Befehle</h3>
   </div>
 
-  <div class="command-categories">
-    <div class="category" *ngFor="let category of commandCategories">
-      <h4 class="category-title" (click)="toggleCategory(category.name)">
-        <span class="toggle-icon">{{ category.expanded ? '▼' : '▶' }}</span>
-        {{ category.name }}
-      </h4>
-      
-      <div class="command-list" *ngIf="category.expanded">
-        <button 
-          *ngFor="let command of category.commands"
-          class="command-button"
-          (click)="selectCommand(command.value)"
-          [title]="command.description">
-          <span class="command-icon">{{ command.icon }}</span>
-          <span class="command-name">{{ command.name }}</span>
-        </button>
+  <!-- Scrollbarer Inhaltsbereich -->
+  <div class="nav-content">
+    <div class="command-categories">
+      <div class="category" *ngFor="let category of commandCategories">
+        <h4 class="category-title" (click)="toggleCategory(category.name)">
+          <span class="toggle-icon">{{ category.expanded ? '▼' : '▶' }}</span>
+          {{ category.name }}
+        </h4>
+
+        <div class="command-list" *ngIf="category.expanded">
+          <button *ngFor="let command of category.commands" class="command-button"
+            (click)="selectCommand(command.value)" [title]="command.description">
+            <span class="command-icon">{{ command.icon }}</span>
+            <span class="command-name">{{ command.name }}</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- Fester Footer -->
   <div class="nav-footer">
     <div class="working-directory">
       <span class="dir-label">📁 Aktuell:</span>

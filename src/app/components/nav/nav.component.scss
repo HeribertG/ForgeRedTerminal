@@ -1,117 +1,235 @@
-.nav {
-    background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
-    color: white;
-    width: 280px;
-    padding: 1rem;
-    overflow-y: auto;
-    border-right: 1px solid #34495e;
+// navigation.component.scss
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #729010;
+  color:darkgreen;
 }
 
+// Fester Header
 .nav-header {
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #7f8c8d;
-}
-
-.nav-header h3 {
+  flex-shrink: 0;
+  padding: 1rem;
+  color:darkgreen;
+  background-color: #729010;
+  border-bottom: 1px solid #444444;
+  
+  h3 {
     margin: 0;
-    color: #ecf0f1;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+  }
 }
 
-.command-categories {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.category-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0 0 0.5rem 0;
-    padding: 0.5rem;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: background-color 0.2s ease;
-    user-select: none;
-}
-
-.category-title:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.toggle-icon {
-    font-size: 0.8rem;
-    transition: transform 0.2s ease;
-}
-
-.command-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    margin-left: 1rem;
-}
-
-.command-button {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    width: 100%;
-    padding: 0.6rem 0.75rem;
-    background: linear-gradient(135deg, #3498db, #2980b9);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.85rem;
-    text-align: left;
-}
-
-.command-button:hover {
-    background: linear-gradient(135deg, #2980b9, #21618c);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.command-icon {
-    font-size: 1rem;
-    min-width: 1.2rem;
-}
-
-.command-name {
-    flex: 1;
-    font-weight: 500;
-}
-
-.nav-footer {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #7f8c8d;
-}
-
-.working-directory {
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 0.75rem;
-    border-radius: 6px;
-    font-size: 0.8rem;
-}
-
-.dir-label {
-    display: block;
-    color: #bdc3c7;
-    margin-bottom: 0.25rem;
-}
-
-.dir-path {
-    word-break: break-all;
-    color: #ecf0f1;
-    font-family: 'Courier New', monospace;
-    background-color: rgba(255, 255, 255, 0.05);
-    padding: 0.25rem 0.5rem;
+// Scrollbarer Inhaltsbereich
+.nav-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  // Kein Rand und keine Hintergrundfarbe wie gewünscht
+  border: none;
+  background: transparent;
+  
+  // Scrollbar Styling
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background:  darkgreen;
     border-radius: 3px;
-    display: block;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #666666;
+  }
+}
+
+// Container für Kategorien (ursprüngliche Struktur)
+.command-categories {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+// Einzelne Kategorien (ursprüngliche Formatierung)
+.category {
+  margin-bottom: 0.5rem;
+}
+
+// Category Title (ursprüngliche Formatierung)
+.category-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background-color: #5f7a06;
+  border: none;
+  border-left: 4px solid #4a90e2;
+  color: whitesmoke;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+  
+  &:hover {
+    background-color: #729010;
+    border-left-color: #5ba0f2;
+  }
+  
+  &:active {
+    background-color: #4a90e2;
+  }
+}
+
+// Toggle Icon (ursprüngliche Formatierung)
+.toggle-icon {
+  font-size: 0.8rem;
+  color: #4a90e2;
+  transition: transform 0.2s ease;
+  width: 12px;
+  text-align: center;
+}
+
+// Command List Container (ursprüngliche Formatierung)
+.command-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem 1rem 1rem;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+// Command Buttons (ursprüngliche Formatierung)
+.command-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background-color: #5f7a06;
+  border: 1px solid #555555;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  width: 100%;
+  
+  &:hover {
+    background-color: #729010;
+    border-color: #4a90e2;
+    transform: translateX(2px);
+  }
+  
+  &:active {
+    background-color: #4a90e2;
+    transform: translateX(0);
+  }
+  
+  &:focus {
+    outline: 2px solid #4a90e2;
+    outline-offset: 2px;
+  }
+}
+
+// Command Icon (ursprüngliche Formatierung)
+.command-icon {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+// Command Name (ursprüngliche Formatierung)
+.command-name {
+  flex: 1;
+  font-weight: 400;
+}
+
+// Fester Footer
+.nav-footer {
+  flex-shrink: 0;
+  padding: 1rem;
+  background-color: #729010;
+  border-top: 1px solid #444444;
+}
+
+// Working Directory Anzeige
+.working-directory {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  
+  .dir-label {
+    color: #cccccc;
+    font-weight: 500;
+  }
+  
+  .dir-path {
+    color: #4a90e2;
+    font-family: 'Courier New', Consolas, monospace;
+    background-color: #222222;
+    padding: 0.5rem;
+    border-radius: 4px;
+    word-break: break-all;
+    border: 1px solid #444444;
+  }
+}
+
+// Animationen für Expand/Collapse
+.command-list {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+// Responsive Anpassungen
+@media (max-width: 768px) {
+  .nav-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .category-title {
+    font-size: 0.9rem;
+    padding: 0.6rem 0.75rem;
+  }
+  
+  .command-button {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .command-list {
+    padding: 0.5rem 0.75rem 0.75rem 0.75rem;
+  }
+  
+  .nav-footer {
+    padding: 0.75rem;
+  }
+  
+  .working-directory {
+    font-size: 0.8rem;
+  }
 }
