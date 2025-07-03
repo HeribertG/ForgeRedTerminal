@@ -6,273 +6,303 @@ import * as os from 'os';
 let mainWindow: BrowserWindow;
 
 function createWindow(): void {
-    mainWindow = new BrowserWindow({
-        height: 800,
-        width: 1200,
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            preload: path.join(__dirname, 'preload.js')
-        }
-    });
+  // Icon-Pfad bestimmen
+  const iconPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'assets', 'icon.png')
+    : path.join(__dirname, '../../assets/icon.png');
 
+  mainWindow = new BrowserWindow({
+    height: 800,
+    width: 1200,
+    minWidth: 800,
+    minHeight: 600,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js'),
+    },
+    icon: iconPath,
+    title: 'ForgeRed Terminal',
+    backgroundColor: '#1e1e1e',
+    show: false, // Erst zeigen wenn geladen
+  });
+
+  // Zeige Fenster wenn bereit
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
+
+  // Production vs Development
+  if (app.isPackaged) {
+    // Production: Lade die gebaute Angular App
+    const indexPath = path.join(__dirname, '../forge-red-terminal/index.html');
+    mainWindow.loadFile(indexPath);
+
+    // DevTools nur auf Anfrage öffnen
+    mainWindow.webContents.on('before-input-event', (event, input) => {
+      if (input.control && input.shift && input.key.toLowerCase() === 'i') {
+        mainWindow.webContents.toggleDevTools();
+      }
+    });
+  } else {
+    // Development: Lade vom Dev-Server
     mainWindow.loadURL('http://localhost:4200');
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
+  }
 
-    mainWindow.on('closed', () => {
-        mainWindow = null as any;
-    });
+  mainWindow.on('closed', () => {
+    mainWindow = null as any;
+  });
 }
 
-app.whenReady().then(createWindow);
+// Single Instance Lock
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    // Wenn eine zweite Instanz gestartet wird, fokussiere das existierende Fenster
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+
+  app.whenReady().then(createWindow);
+}
 
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 });
 
 app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
-    }
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
 });
 
 // IPC Handler für CMD Befehle (mit Debugging)
-ipcMain.handle('execute-command', async (event, command: string, workingDir: string) => {
+ipcMain.handle(
+  'execute-command',
+  async (event, command: string, workingDir: string) => {
     console.log('🚀 ELECTRON: Executing command:', command);
 
     return new Promise((resolve, reject) => {
-        const isWindows = os.platform() === 'win32';
+      const isWindows = os.platform() === 'win32';
 
-        let finalCommand = command;
-        let shell: string;
-        let args: string[];
+      let finalCommand = command;
+      let shell: string;
+      let args: string[];
 
-        if (isWindows) {
-            finalCommand = mapCommandToPowerShell(command);
-            shell = 'powershell.exe';
-            args = ['-Command', finalCommand];
-            console.log('🖥️ WINDOWS: Using PowerShell with command:', finalCommand);
-        } else {
-            shell = '/bin/bash';
-            args = ['-c', command];
-            console.log('🐧 UNIX: Using bash with command:', command);
-        }
+      if (isWindows) {
+        finalCommand = mapCommandToPowerShell(command);
+        shell = 'powershell.exe';
+        args = ['-Command', finalCommand];
+        console.log('🖥️ WINDOWS: Using PowerShell with command:', finalCommand);
+      } else {
+        shell = '/bin/bash';
+        args = ['-c', command];
+        console.log('🐧 UNIX: Using bash with command:', command);
+      }
 
-        const childProcess = spawn(shell, args, {
-            cwd: workingDir,
-            env: process.env
+      const childProcess = spawn(shell, args, {
+        cwd: workingDir,
+        env: process.env,
+      });
+
+      let stdout = '';
+      let stderr = '';
+
+      if (childProcess.stdout) {
+        childProcess.stdout.on('data', (data: Buffer) => {
+          let text = data.toString('utf8');
+
+          if (isWindows) {
+            text = fixGermanChars(text);
+          }
+
+          stdout += text;
         });
+      }
 
-        let stdout = '';
-        let stderr = '';
-
-        if (childProcess.stdout) {
-            childProcess.stdout.on('data', (data: Buffer) => {
-                console.log('📥 RAW BUFFER:', data);
-                console.log('📥 RAW BYTES:', [...data]);
-
-                let text = data.toString('utf8');
-                console.log('📝 UTF-8 TEXT:', text);
-                console.log('📝 TEXT CHARS:', [...text].map(c => `${c} (${c.charCodeAt(0)})`));
-
-                if (isWindows) {
-                    const originalText = text;
-                    text = fixGermanChars(text);
-                    console.log('🔄 BEFORE FIX:', originalText);
-                    console.log('✅ AFTER FIX:', text);
-                }
-
-                stdout += text;
-            });
-        }
-
-        if (childProcess.stderr) {
-            childProcess.stderr.on('data', (data: Buffer) => {
-                console.log('❌ STDERR:', data.toString('utf8'));
-                stderr += data.toString('utf8');
-            });
-        }
-
-        childProcess.on('close', (code) => {
-            console.log('🏁 PROCESS CLOSED:', code);
-            console.log('📤 FINAL STDOUT:', stdout);
-            console.log('📤 FINAL STDERR:', stderr);
-
-            resolve({
-                output: stdout,
-                error: stderr,
-                exitCode: code
-            });
+      if (childProcess.stderr) {
+        childProcess.stderr.on('data', (data: Buffer) => {
+          stderr += data.toString('utf8');
         });
+      }
 
-        childProcess.on('error', (error) => {
-            console.log('💥 PROCESS ERROR:', error);
-            reject({
-                output: '',
-                error: error.message,
-                exitCode: -1
-            });
+      childProcess.on('close', (code) => {
+        resolve({
+          output: stdout,
+          error: stderr,
+          exitCode: code,
         });
+      });
+
+      childProcess.on('error', (error) => {
+        reject({
+          output: '',
+          error: error.message,
+          exitCode: -1,
+        });
+      });
     });
-});
+  }
+);
 
-// Hilfsfunktion mit Logging
+// Hilfsfunktion für deutsche Zeichen - vereinfachte Version
 function fixGermanChars(text: string): string {
-    console.log('🔧 FIXING GERMAN CHARS IN:', text);
+  // Ersetze bekannte fehlerhafte Patterns
+  let result = text
+    .replace(/Datentr�ger/g, 'Datenträger')
+    .replace(/Gr��e/g, 'Größe')
+    .replace(/L�nge/g, 'Länge')
+    .replace(/Verf�gbar/g, 'Verfügbar');
 
-    const replacements: { [key: string]: string } = {
-        'Datentr�ger': 'Datenträger',
-        'Gr��e': 'Größe',
-        'L�nge': 'Länge',
-        'Verf�gbar': 'Verfügbar',
-        '�': 'ä',
-        '�': 'ö',
-        '�': 'ü',
-        '�': 'ß',
-        '�': 'Ä',
-        '�': 'Ö',
-        '�': 'Ü'
-    };
+  // Alternative: Versuche PowerShell mit korrekter Kodierung zu nutzen
+  // Dies sollte in der execute-powershell Funktion bereits besser funktionieren
 
-    let result = text;
-    for (const [wrong, correct] of Object.entries(replacements)) {
-        if (result.includes(wrong)) {
-            console.log(`🔀 REPLACING: "${wrong}" → "${correct}"`);
-            result = result.replace(new RegExp(wrong, 'g'), correct);
-        }
-    }
-
-    console.log('✨ FINAL RESULT:', result);
-    return result;
+  return result;
 }
 
 function mapCommandToPowerShell(command: string): string {
-    const cmd = command.toLowerCase().trim();
+  const cmd = command.toLowerCase().trim();
 
-    switch (cmd) {
-        case 'dir':
-            return 'Get-ChildItem | Format-Table Name, Mode, LastWriteTime, @{Name="Length";Expression={if($_.Length){$_.Length}else{"<DIR>"}}} -AutoSize';
-        case 'systeminfo':
-            return 'Get-ComputerInfo | Format-List';
-        case 'tasklist':
-            return 'Get-Process | Format-Table Name, Id, @{Name="Memory(MB)";Expression={[math]::Round($_.WorkingSet/1MB,2)}} -AutoSize';
-        case 'ipconfig':
-            return 'Get-NetIPConfiguration | Format-List';
-        case 'date':
-            return 'Get-Date';
-        default:
-            // Für unbekannte Befehle versuche CMD mit UTF-8
-            return `cmd /c "chcp 65001 >nul & ${command}"`;
-    }
+  switch (cmd) {
+    case 'dir':
+      return 'Get-ChildItem | Format-Table Name, Mode, LastWriteTime, @{Name="Length";Expression={if($_.Length){$_.Length}else{"<DIR>"}}} -AutoSize';
+    case 'systeminfo':
+      return 'Get-ComputerInfo | Format-List';
+    case 'tasklist':
+      return 'Get-Process | Format-Table Name, Id, @{Name="Memory(MB)";Expression={[math]::Round($_.WorkingSet/1MB,2)}} -AutoSize';
+    case 'ipconfig':
+      return 'Get-NetIPConfiguration | Format-List';
+    case 'date':
+      return 'Get-Date';
+    default:
+      // Für unbekannte Befehle versuche CMD mit UTF-8
+      return `cmd /c "chcp 65001 >nul & ${command}"`;
+  }
 }
 
-
-
 // Alternative PowerShell-Implementation (für bessere Unicode-Unterstützung)
-ipcMain.handle('execute-powershell', async (event, command: string, workingDir: string) => {
+ipcMain.handle(
+  'execute-powershell',
+  async (event, command: string, workingDir: string) => {
     return new Promise((resolve, reject) => {
-        const isWindows = os.platform() === 'win32';
+      const isWindows = os.platform() === 'win32';
 
-        if (!isWindows) {
-            reject(new Error('PowerShell nur auf Windows verfügbar'));
-            return;
-        }
+      if (!isWindows) {
+        reject(new Error('PowerShell nur auf Windows verfügbar'));
+        return;
+      }
 
-        // PowerShell mit expliziter UTF-8 Ausgabe
-        const powershellArgs = [
-            '-NoProfile',
-            '-NonInteractive',
-            '-Command',
-            `[Console]::OutputEncoding = [Text.Encoding]::UTF8; ${command}`
-        ];
+      // PowerShell mit expliziter UTF-8 Ausgabe
+      const powershellArgs = [
+        '-NoProfile',
+        '-NonInteractive',
+        '-Command',
+        `[Console]::OutputEncoding = [Text.Encoding]::UTF8; ${command}`,
+      ];
 
-        const childProcess = spawn('powershell.exe', powershellArgs, {
-            cwd: workingDir,
-            env: process.env,
-            stdio: ['pipe', 'pipe', 'pipe']
+      const childProcess = spawn('powershell.exe', powershellArgs, {
+        cwd: workingDir,
+        env: process.env,
+        stdio: ['pipe', 'pipe', 'pipe'],
+      });
+
+      let stdout = '';
+      let stderr = '';
+
+      if (childProcess.stdout) {
+        childProcess.stdout.on('data', (data: Buffer) => {
+          const text = data.toString('utf8');
+          stdout += text;
         });
+      }
 
-        let stdout = '';
-        let stderr = '';
-
-        if (childProcess.stdout) {
-            childProcess.stdout.on('data', (data: Buffer) => {
-                const text = data.toString('utf8');
-                stdout += text;
-            });
-        }
-
-        if (childProcess.stderr) {
-            childProcess.stderr.on('data', (data: Buffer) => {
-                const text = data.toString('utf8');
-                stderr += text;
-            });
-        }
-
-        childProcess.on('close', (code) => {
-            resolve({
-                output: stdout,
-                error: stderr,
-                exitCode: code
-            });
+      if (childProcess.stderr) {
+        childProcess.stderr.on('data', (data: Buffer) => {
+          const text = data.toString('utf8');
+          stderr += text;
         });
+      }
 
-        childProcess.on('error', (error) => {
-            reject({
-                output: '',
-                error: error.message,
-                exitCode: -1
-            });
+      childProcess.on('close', (code) => {
+        resolve({
+          output: stdout,
+          error: stderr,
+          exitCode: code,
         });
+      });
+
+      childProcess.on('error', (error) => {
+        reject({
+          output: '',
+          error: error.message,
+          exitCode: -1,
+        });
+      });
     });
-});
+  }
+);
 
-// Weitere IPC Handler (unverändert)
+// Weitere IPC Handler
 ipcMain.handle('get-cwd', async () => {
-    return process.cwd();
+  return process.cwd();
 });
 
 ipcMain.handle('change-directory', async (event, newDir: string) => {
-    try {
-        process.chdir(newDir);
-        return { success: true, cwd: process.cwd() };
-    } catch (error) {
-        return { success: false, error: (error as Error).message };
-    }
+  try {
+    process.chdir(newDir);
+    return { success: true, cwd: process.cwd() };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
 });
 
 ipcMain.handle('get-system-info', async () => {
-    return {
-        platform: os.platform(),
-        release: os.release(),
-        arch: os.arch(),
-        hostname: os.hostname(),
-        userInfo: os.userInfo(),
-        totalMemory: os.totalmem(),
-        freeMemory: os.freemem(),
-        cpus: os.cpus().length
-    };
+  return {
+    platform: os.platform(),
+    release: os.release(),
+    arch: os.arch(),
+    hostname: os.hostname(),
+    userInfo: os.userInfo(),
+    totalMemory: os.totalmem(),
+    freeMemory: os.freemem(),
+    cpus: os.cpus().length,
+  };
 });
 
 // Window-Control Handler
 ipcMain.handle('window-minimize', async () => {
-    mainWindow?.minimize();
+  mainWindow?.minimize();
 });
 
 ipcMain.handle('window-maximize', async () => {
-    if (mainWindow?.isMaximized()) {
-        mainWindow.unmaximize();
-    } else {
-        mainWindow?.maximize();
-    }
+  if (mainWindow?.isMaximized()) {
+    mainWindow.unmaximize();
+  } else {
+    mainWindow?.maximize();
+  }
 });
 
 ipcMain.handle('window-close', async () => {
-    mainWindow?.close();
+  mainWindow?.close();
 });
 
 ipcMain.handle('window-is-maximized', async () => {
-    return mainWindow?.isMaximized() || false;
+  return mainWindow?.isMaximized() || false;
+});
+
+// Error Handling
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
