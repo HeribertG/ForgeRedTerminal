@@ -1,27 +1,39 @@
-# Erstelle .gitignore für Angular/Electron
-echo "# Dependencies
+# Node dependencies
+release/
+*.exe
+
 node_modules/
 npm-debug.log*
 
-# Build outputs
+# Angular cache
+.angular/cache/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Compiled output
 dist/
 build/
 
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Electron
+# Electron build artefacts
 out/
 packages/
 
-# Environment
+# IDE-/Editor-Verzeichnisse
+.vscode/
+.idea/
+
+# OS-Dateien
+.DS_Store
+Thumbs.db
+
+# Environment-Files
 .env
 .env.local
 
-# Logs
-*.log" > .gitignore
+# Log-Files
+*.log
+
+# Sonstige temporäre Dateien
+*.tmp
+*.temp
