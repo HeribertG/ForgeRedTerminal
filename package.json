@@ -10,20 +10,17 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    
     "build-electron": "if not exist dist\\electron mkdir dist\\electron && npx tsc electron/main.ts --outDir dist/electron --target es2018 --module commonjs --skipLibCheck && copy electron\\preload.js dist\\electron\\",
     "electron": "npm run build-electron && npx electron .",
     "electron-dev": "npm run build-electron && concurrently \"ng serve\" \"wait-on http://localhost:4200 && npx electron .\"",
     "start-electron": "concurrently \"ng serve\" \"npm run wait-and-electron\"",
     "wait-and-electron": "wait-on http://localhost:4200 && npm run build-electron && npx electron .",
-    
     "build:angular": "ng build --configuration production",
     "build:electron-ts": "tsc electron/main.ts --outDir dist/electron --target es2018 --module commonjs --skipLibCheck",
     "copy:preload:win": "copy electron\\preload.js dist\\electron\\",
     "copy:preload:unix": "cp electron/preload.js dist/electron/",
     "build:all:win": "npm run build:angular && npm run build:electron-ts && npm run copy:preload:win",
     "build:all:unix": "npm run build:angular && npm run build:electron-ts && npm run copy:preload:unix",
-    
     "dist": "npm run build:all:win && electron-builder",
     "dist:win": "npm run build:all:win && electron-builder --win",
     "dist:mac": "npm run build:all:unix && electron-builder --mac",
@@ -51,17 +48,18 @@
     "@angular/compiler-cli": "^19.2.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^24.0.8",
-    "electron": "^37.1.0",
-    "electron-builder": "^25.0.0",
     "concurrently": "^9.2.0",
-    "wait-on": "^8.0.3",
+    "electron": "^37.1.0",
+    "electron-builder": "^25.1.8",
+    "electron-icon-builder": "^2.0.1",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.7.2"
+    "typescript": "~5.7.2",
+    "wait-on": "^8.0.3"
   },
   "build": {
     "appId": "com.projektfokus.forgeredterminal",
@@ -87,7 +85,10 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         }
       ],
       "icon": "assets/icon.ico",
@@ -108,7 +109,10 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "icon": "assets/icon.icns",
@@ -122,11 +126,15 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "assets/icon.png",
@@ -140,7 +148,9 @@
       {
         "from": "assets/",
         "to": "assets/",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "publish": {
