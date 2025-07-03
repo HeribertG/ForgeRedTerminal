@@ -6,7 +6,7 @@
   height: 100%;
   width: 100%;
   background-color: #729010;
-  color:darkgreen;
+  color:lightgreen;
 }
 
 // Fester Header
@@ -44,7 +44,7 @@
   }
   
   &::-webkit-scrollbar-thumb {
-    background:  darkgreen;
+    background:  lightgreen;
     border-radius: 3px;
   }
   
@@ -74,8 +74,8 @@
   padding: 0.75rem 1rem;
   background-color: #5f7a06;
   border: none;
-  border-left: 4px solid #4a90e2;
-  color: whitesmoke;
+  border-left: 4px solid darkgreen;
+  color: lightgreen;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -85,24 +85,22 @@
   
   &:hover {
     background-color: #729010;
-    border-left-color: #5ba0f2;
+    border-left-color: darkgreen;
   }
   
   &:active {
-    background-color: #4a90e2;
+    background-color: darkgreen;
   }
 }
 
-// Toggle Icon (ursprüngliche Formatierung)
 .toggle-icon {
   font-size: 0.8rem;
-  color: #4a90e2;
+  color: lightgreen;
   transition: transform 0.2s ease;
   width: 12px;
   text-align: center;
 }
 
-// Command List Container (ursprüngliche Formatierung)
 .command-list {
   display: flex;
   flex-direction: column;
@@ -129,17 +127,17 @@
   
   &:hover {
     background-color: #729010;
-    border-color: #4a90e2;
+    border-color: darkgreen;
     transform: translateX(2px);
   }
   
   &:active {
-    background-color: #4a90e2;
+    background-color: darkgreen;
     transform: translateX(0);
   }
   
   &:focus {
-    outline: 2px solid #4a90e2;
+    outline: 2px solid darkgreen;
     outline-offset: 2px;
   }
 }
@@ -174,12 +172,12 @@
   font-size: 0.85rem;
   
   .dir-label {
-    color: #cccccc;
+    color: lightgreen;
     font-weight: 500;
   }
   
   .dir-path {
-    color: #4a90e2;
+    color: lawngreen;
     font-family: 'Courier New', Consolas, monospace;
     background-color: #222222;
     padding: 0.5rem;

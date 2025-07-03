@@ -37,3 +37,4 @@ Thumbs.db
 # Sonstige temporäre Dateien
 *.tmp
 *.temp
+*.tsbuildinfo
