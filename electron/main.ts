@@ -30,13 +30,43 @@ function createWindow(): void {
   // Zeige Fenster wenn bereit
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
+    if (!app.isPackaged) {
+      mainWindow.webContents.openDevTools();
+    }
   });
 
   // Production vs Development
   if (app.isPackaged) {
     // Production: Lade die gebaute Angular App
-    const indexPath = path.join(__dirname, '../forge-red-terminal/index.html');
-    mainWindow.loadFile(indexPath);
+    // KORRIGIERTER PFAD: Die Angular App liegt in dist/forge-red-terminal
+    const indexPath = path.join(
+      __dirname,
+      '../dist/forge-red-terminal/index.html'
+    );
+
+    console.log('Loading index from:', indexPath);
+    console.log('__dirname:', __dirname);
+    console.log('app.getAppPath():', app.getAppPath());
+
+    mainWindow.loadFile(indexPath).catch((err) => {
+      console.error('Failed to load index.html:', err);
+
+      // Fallback: Versuche andere mögliche Pfade
+      const fallbackPaths = [
+        path.join(
+          process.resourcesPath,
+          'app',
+          'dist',
+          'forge-red-terminal',
+          'index.html'
+        ),
+        path.join(app.getAppPath(), 'dist', 'forge-red-terminal', 'index.html'),
+        path.join(__dirname, 'forge-red-terminal', 'index.html'),
+      ];
+
+      console.log('Trying fallback paths...');
+      tryLoadFallbacks(fallbackPaths);
+    });
 
     // DevTools nur auf Anfrage öffnen
     mainWindow.webContents.on('before-input-event', (event, input) => {
@@ -46,12 +76,29 @@ function createWindow(): void {
     });
   } else {
     // Development: Lade vom Dev-Server
-    mainWindow.loadURL('http://localhost:4200');
-    // mainWindow.webContents.openDevTools();
+    mainWindow.loadURL('http://localhost:4200').catch((err) => {
+      console.error('Failed to load dev server:', err);
+    });
   }
 
   mainWindow.on('closed', () => {
     mainWindow = null as any;
+  });
+}
+
+// Hilfsfunktion für Fallback-Pfade
+function tryLoadFallbacks(paths: string[]): void {
+  if (paths.length === 0) {
+    console.error('No more fallback paths to try');
+    return;
+  }
+
+  const currentPath = paths.shift()!;
+  console.log('Trying path:', currentPath);
+
+  mainWindow.loadFile(currentPath).catch((err) => {
+    console.error(`Failed to load ${currentPath}:`, err);
+    tryLoadFallbacks(paths);
   });
 }
 
@@ -161,9 +208,6 @@ function fixGermanChars(text: string): string {
     .replace(/Gr��e/g, 'Größe')
     .replace(/L�nge/g, 'Länge')
     .replace(/Verf�gbar/g, 'Verfügbar');
-
-  // Alternative: Versuche PowerShell mit korrekter Kodierung zu nutzen
-  // Dies sollte in der execute-powershell Funktion bereits besser funktionieren
 
   return result;
 }

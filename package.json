@@ -10,22 +10,16 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build-electron": "if not exist dist\\electron mkdir dist\\electron && npx tsc electron/main.ts --outDir dist/electron --target es2018 --module commonjs --skipLibCheck && copy electron\\preload.js dist\\electron\\",
-    "electron": "npm run build-electron && npx electron .",
-    "electron-dev": "npm run build-electron && concurrently \"ng serve\" \"wait-on http://localhost:4200 && npx electron .\"",
-    "start-electron": "concurrently \"ng serve\" \"npm run wait-and-electron\"",
-    "wait-and-electron": "wait-on http://localhost:4200 && npm run build-electron && npx electron .",
-    "build:angular": "ng build --configuration production",
-    "build:electron-ts": "tsc electron/main.ts --outDir dist/electron --target es2018 --module commonjs --skipLibCheck",
-    "copy:preload:win": "copy electron\\preload.js dist\\electron\\",
-    "copy:preload:unix": "cp electron/preload.js dist/electron/",
-    "build:all:win": "npm run build:angular && npm run build:electron-ts && npm run copy:preload:win",
-    "build:all:unix": "npm run build:angular && npm run build:electron-ts && npm run copy:preload:unix",
-    "dist": "npm run build:all:win && electron-builder",
-    "dist:win": "npm run build:all:win && electron-builder --win",
-    "dist:mac": "npm run build:all:unix && electron-builder --mac",
-    "dist:linux": "npm run build:all:unix && electron-builder --linux",
-    "dist:all": "electron-builder -mwl"
+    
+    "electron": "ng build && electron .",
+    "electron-dev": "ng build --configuration development && electron .",
+    "electron-pack": "electron-builder",
+    
+    "build-electron": "ng build --configuration production && tsc -p electron/tsconfig.json",
+    "dist": "npm run build-electron && electron-builder",
+    "dist:win": "npm run build-electron && electron-builder --win",
+    "dist:mac": "npm run build-electron && electron-builder --mac",
+    "dist:linux": "npm run build-electron && electron-builder --linux"
   },
   "private": true,
   "dependencies": {
