@@ -1,15 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-// Font Variables
+// Font Variables mit Emoji-Unterstützung
 :root {
-    // UI Fonts (für Interface-Elemente)
-    --font-primary: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-    --font-secondary: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    // UI Fonts (für Interface-Elemente) - ERWEITERT MIT EMOJI-FONTS
+    --font-primary: 'Inter', 'Segoe UI', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Noto Emoji', 'Symbola', system-ui, -apple-system, sans-serif;
+    --font-secondary: 'SF Pro Display', 'Helvetica Neue', 'Apple Color Emoji', 'Segoe UI Emoji', Arial, sans-serif;
 
-    // Terminal Fonts (für Code/Terminal)
-    --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+    // Terminal Fonts (für Code/Terminal) - ERWEITERT MIT EMOJI-FONTS
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Courier New', monospace;
+    --font-terminal: 'Consolas', 'Monaco', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Courier New', monospace;
 
-    --font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
+    // NEUE: Dedicated Emoji Font Stack
+    --font-emoji: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'Noto Emoji', 'Symbola', 'EmojiOne Color', 'Android Emoji', sans-serif;
+
+    // Terminal-spezifische Variablen
+    --terminal-font-size: 14px;
+    --terminal-line-height: 1.4;
+    --terminal-letter-spacing: 0.02em;
 
     // Font Weights
     --font-weight-light: 300;
@@ -52,6 +59,31 @@ body {
     overflow: hidden;
 }
 
+// EMOJI-SPEZIFISCHE KLASSEN
+.emoji {
+    font-family: var(--font-emoji) !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    line-height: 1;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+// Icons in Buttons und Navigation
+.command-icon,
+.terminal-icon,
+.stat-icon,
+.header-icon,
+.toggle-icon {
+    font-family: var(--font-emoji) !important;
+    font-style: normal;
+    font-weight: normal;
+    display: inline-block;
+    line-height: 1;
+    vertical-align: middle;
+}
+
 // Typography Classes
 .font-primary {
     font-family: var(--font-primary);
@@ -63,6 +95,10 @@ body {
 
 .font-mono {
     font-family: var(--font-mono);
+}
+
+.font-emoji {
+    font-family: var(--font-emoji) !important;
 }
 
 // Font Weight Classes
@@ -180,13 +216,22 @@ pre {
 // Terminal-spezifische Klassen
 .terminal,
 .terminal * {
-    font-family: var(--font-mono) !important;
+    font-family: var(--font-terminal) !important;
 }
 
 .terminal-text {
-    font-family: var(--font-mono);
+    font-family: var(--font-terminal);
     font-size: var(--font-size-sm);
     line-height: 1.4;
+}
+
+// WICHTIG: Emoji-Fallback für alle Elemente
+button .emoji,
+span .emoji,
+div .emoji,
+.command-button .emoji,
+.terminal-line .emoji {
+    font-family: var(--font-emoji) !important;
 }
 
 // Smooth Scrollbar für alle Elemente außer Terminal
@@ -228,11 +273,3 @@ pre {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
-// .select-none {
-//   user-select: none;
-// }
-
-// .select-all {
-//   user-select: all;
-// }

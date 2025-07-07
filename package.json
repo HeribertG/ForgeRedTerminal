@@ -1,156 +1,141 @@
 {
   "name": "forge-red-terminal",
   "version": "1.0.0",
-  "description": "ForgeRed Terminal - Eine moderne Terminal-Anwendung",
-  "author": "Projektfokus GmbH",
   "main": "dist/electron/main.js",
+  "description": "Terminal application built with Angular and Electron",
+  "author": "Projektfokus GmbH",
+  "license": "MIT",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "ng": "npx @angular/cli",
+    "start": "npx @angular/cli serve",
+    "build": "npx @angular/cli build",
+    "build-prod": "npx @angular/cli build --configuration production",
+    "watch": "npx @angular/cli build --watch --configuration development",
+    "test": "npx @angular/cli test",
     
-    "electron": "ng build && electron .",
-    "electron-dev": "ng build --configuration development && electron .",
-    "electron-pack": "electron-builder",
+    "electron": "npm run build-prod && npx tsc -p electron/tsconfig.json && npx electron .",
+    "electron-dev": "npx @angular/cli build --configuration development && npx tsc -p electron/tsconfig.json && npx electron .",
+    "electron-only": "npx electron .",
     
-    "build-electron": "ng build --configuration production && tsc -p electron/tsconfig.json",
-    "dist": "npm run build-electron && electron-builder",
-    "dist:win": "npm run build-electron && electron-builder --win",
-    "dist:mac": "npm run build-electron && electron-builder --mac",
-    "dist:linux": "npm run build-electron && electron-builder --linux"
+    "build-electron": "npm run build-prod && npx tsc -p electron/tsconfig.json",
+    "dist": "npm run build-electron && npx electron-builder",
+    "dist:win": "npm run build-electron && npx electron-builder --win",
+    "dist:mac": "npm run build-electron && npx electron-builder --mac",
+    "dist:linux": "npm run build-electron && npx electron-builder --linux",
+    "dist:all": "npm run build-electron && npx electron-builder --win --mac --linux"
   },
-  "private": true,
   "dependencies": {
-    "@angular/common": "^19.2.0",
-    "@angular/compiler": "^19.2.0",
-    "@angular/core": "^19.2.0",
-    "@angular/forms": "^19.2.0",
-    "@angular/platform-browser": "^19.2.0",
-    "@angular/platform-browser-dynamic": "^19.2.0",
-    "@angular/router": "^19.2.0",
-    "@xterm/addon-fit": "^0.10.0",
+    "@angular/animations": "^19.0.0",
+    "@angular/common": "^19.0.0",
+    "@angular/compiler": "^19.0.0",
+    "@angular/core": "^19.0.0",
+    "@angular/forms": "^19.0.0",
+    "@angular/platform-browser": "^19.0.0",
+    "@angular/platform-browser-dynamic": "^19.0.0",
+    "@angular/router": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "xterm": "^5.3.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^19.2.15",
-    "@angular/cli": "^19.2.15",
-    "@angular/compiler-cli": "^19.2.0",
+    "@angular-devkit/build-angular": "^19.0.0",
+    "@angular/cli": "^19.0.0",
+    "@angular/compiler-cli": "^19.0.0",
     "@types/jasmine": "~5.1.0",
-    "@types/node": "^24.0.8",
-    "concurrently": "^9.2.0",
-    "electron": "^37.1.0",
-    "electron-builder": "^25.1.8",
-    "electron-icon-builder": "^2.0.1",
-    "jasmine-core": "~5.6.0",
+    "@types/node": "^18.7.0",
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0",
+    "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.7.2",
-    "wait-on": "^8.0.3"
+    "typescript": "~5.6.0"
   },
   "build": {
     "appId": "com.projektfokus.forgeredterminal",
     "productName": "ForgeRed Terminal",
-    "copyright": "Copyright © 2025 Projektfokus GmbH",
     "directories": {
-      "output": "release",
-      "buildResources": "assets"
+      "output": "release"
     },
     "files": [
       "dist/**/*",
       "node_modules/**/*",
-      "!**/*.ts",
-      "!*.map",
-      "!package-lock.json",
-      "!src/**/*",
-      "!electron/**/*",
-      "!release/**/*",
-      "!.angular/**/*",
-      "!**/*.spec.js"
+      "!node_modules/**/*.{md,txt}",
+      "!**/src/**/*",
+      "!**/{.git,.github,.vscode,docs,test,tests,spec,specs}/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets",
+        "filter": ["**/*"]
+      }
     ],
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
         }
       ],
-      "icon": "assets/icon.ico",
-      "requestedExecutionLevel": "requireAdministrator"
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "assets/icon.icns",
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64"]
+        },
+        {
+          "target": "tar.gz",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "category": "Development",
+      "description": "Professional terminal application with system command execution",
+      "desktop": {
+        "Name": "ForgeRed Terminal",
+        "Comment": "Professional terminal application",
+        "Categories": "Development;System;TerminalEmulator;"
+      }
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "ForgeRed Terminal",
-      "uninstallDisplayName": "ForgeRed Terminal",
-      "installerIcon": "assets/icon.ico",
-      "uninstallerIcon": "assets/icon.ico",
-      "installerHeaderIcon": "assets/icon.ico"
+      "shortcutName": "ForgeRed Terminal"
     },
-    "mac": {
-      "target": [
-        {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        }
-      ],
-      "icon": "assets/icon.icns",
-      "category": "public.app-category.developer-tools",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "assets/entitlements.mac.plist",
-      "entitlementsInherit": "assets/entitlements.mac.plist"
+    "deb": {
+      "depends": ["libgtk-3-0", "libnotify-bin", "libnss3", "libxss1", "libxtst6", "xdg-utils", "libatspi2.0-0", "libasound2"]
     },
-    "linux": {
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "deb",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "icon": "assets/icon.png",
-      "category": "Development",
-      "maintainer": "Projektfokus GmbH",
-      "vendor": "Projektfokus GmbH",
-      "synopsis": "Modern Terminal Application",
-      "description": "ForgeRed Terminal - Eine moderne Terminal-Anwendung mit Electron und Angular"
-    },
-    "extraResources": [
-      {
-        "from": "assets/",
-        "to": "assets/",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
-    "publish": {
-      "provider": "github",
-      "owner": "projektfokus",
-      "repo": "forge-red-terminal"
+    "rpm": {
+      "depends": ["gtk3", "libnotify", "nss", "libXScrnSaver", "libXtst", "xdg-utils", "at-spi2-atk", "alsa-lib"]
     }
   }
 }

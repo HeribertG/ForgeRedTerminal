@@ -47,19 +47,19 @@ export class NavComponent implements OnInit {
             name: 'Test Umlaute',
             value: 'echo äöüßÄÖÜ',
             description: 'Testet deutsche Umlaute',
-            icon: '🧪',
+            icon: '🧪', // Fallback: '[T]'
           },
           {
             name: 'PowerShell Test',
             value: 'Write-Output "Ä Ö Ü ä ö ü ß"',
             description: 'PowerShell Umlaut-Test',
-            icon: '💠',
+            icon: '💠', // Fallback: '[PS]'
           },
           {
             name: 'Codepage anzeigen',
             value: 'chcp',
             description: 'Zeigt aktuelle Codepage',
-            icon: '🔢',
+            icon: '🔢', // Fallback: '[#]'
           },
         ],
       },
@@ -71,13 +71,13 @@ export class NavComponent implements OnInit {
             name: 'Lösche Docker',
             value: isWindows ? 'systeminfo' : 'uname -a',
             description: 'Löscht alle Docker Container, Images und Volumes',
-            icon: '🗑️',
+            icon: '🗑️', // Fallback: '[DEL]'
           },
           {
             name: 'Starte Docker',
             value: isWindows ? 'tasklist' : 'ps aux',
             description: 'Startet alle Docker Services',
-            icon: '▶️',
+            icon: '▶️', // Fallback: '[>]'
           },
         ],
       },
@@ -89,19 +89,19 @@ export class NavComponent implements OnInit {
             name: 'Verzeichnis auflisten',
             value: isWindows ? 'dir' : 'ls -la',
             description: 'Listet alle Dateien und Ordner auf',
-            icon: '📁',
+            icon: '📁', // Fallback: '[DIR]'
           },
           {
             name: 'Aktueller Pfad',
             value: isWindows ? 'cd' : 'pwd',
             description: 'Zeigt den aktuellen Pfad an',
-            icon: '📍',
+            icon: '📍', // Fallback: '[LOC]'
           },
           {
             name: 'Home Verzeichnis',
             value: isWindows ? 'cd %USERPROFILE%' : 'cd ~',
             description: 'Wechselt zum Home-Verzeichnis',
-            icon: '🏠',
+            icon: '🏠', // Fallback: '[HOME]'
           },
         ],
       },
@@ -113,19 +113,19 @@ export class NavComponent implements OnInit {
             name: 'Systeminfo',
             value: isWindows ? 'systeminfo' : 'uname -a',
             description: 'Zeigt Systeminformationen',
-            icon: '💻',
+            icon: '💻', // Fallback: '[SYS]'
           },
           {
             name: 'Laufende Prozesse',
             value: isWindows ? 'tasklist' : 'ps aux',
             description: 'Zeigt laufende Prozesse',
-            icon: '⚙️',
+            icon: '⚙️', // Fallback: '[PROC]'
           },
           {
             name: 'Netzwerk',
-            value: isWindows ? 'ipconfig' : 'ifconfig',
+            value: isWindows ? 'ipconfig' : 'ip addr show',
             description: 'Zeigt Netzwerkkonfiguration',
-            icon: '🌐',
+            icon: '🌐', // Fallback: '[NET]'
           },
         ],
       },
@@ -137,13 +137,13 @@ export class NavComponent implements OnInit {
             name: 'Hilfe',
             value: 'help',
             description: 'Zeigt verfügbare Befehle',
-            icon: '❓',
+            icon: '❓', // Fallback: '[?]'
           },
           {
             name: 'Terminal leeren',
             value: 'clear',
             description: 'Löscht den Terminal-Inhalt',
-            icon: '🧹',
+            icon: '🧹', // Fallback: '[CLR]'
           },
         ],
       },
