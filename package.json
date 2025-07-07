@@ -14,7 +14,7 @@
     "test": "npx @angular/cli test",
     
     "electron": "npm run build-prod && npx tsc -p electron/tsconfig.json && npx electron .",
-    "electron-dev": "npx @angular/cli build --configuration development && npx tsc -p electron/tsconfig.json && npx electron .",
+    "electron-dev": "concurrently \"ng serve\" \"wait-on http://localhost:4200 && electron .\"",
     "electron-only": "npx electron .",
     
     "build-electron": "npm run build-prod && npx tsc -p electron/tsconfig.json",

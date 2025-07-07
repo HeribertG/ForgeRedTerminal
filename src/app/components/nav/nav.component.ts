@@ -40,44 +40,70 @@ export class NavComponent implements OnInit {
 
     this.commandCategories = [
       {
-        name: 'Tests',
-        expanded: true,
+        name: 'Docker',
+        expanded: false,
         commands: [
           {
-            name: 'Test Umlaute',
-            value: 'echo äöüßÄÖÜ',
-            description: 'Testet deutsche Umlaute',
-            icon: '🧪', // Fallback: '[T]'
+            name: 'Lösche Docker',
+            value: isWindows
+              ? 'powershell -NoProfile  -Command "Set-Location C:\\ForgeRed\\Docker; node docker_cleanup.js"'
+              : 'cd /d C:\\ForgeRed\\Docker && node docker_cleanup.js',
+            description: 'Löscht alle Docker Container, Images und Volumes',
+            icon: '🗑️',
           },
           {
-            name: 'PowerShell Test',
-            value: 'Write-Output "Ä Ö Ü ä ö ü ß"',
-            description: 'PowerShell Umlaut-Test',
-            icon: '💠', // Fallback: '[PS]'
+            name: 'Installiere Docker',
+            value: isWindows
+              ? 'cmd /c "cd /d C:\\ForgeRed\\Docker && node docker_run.js"'
+              : 'cd /d C:\\ForgeRed\\Docker && node docker_run.js',
+            description: 'Startet alle Docker Services',
+            icon: '▶️', // Fallback: '[>]'
           },
           {
-            name: 'Codepage anzeigen',
-            value: 'chcp',
-            description: 'Zeigt aktuelle Codepage',
-            icon: '🔢', // Fallback: '[#]'
+            name: 'Starte Docker',
+            value: isWindows
+              ? 'cmd /c "cd /d C:\\ForgeRed\\Docker && docker-compose up -d"'
+              : 'cd /d C:\\ForgeRed\\Docker && docker-compose up -d',
+            description: 'Startet alle Docker Services',
+            icon: '🏃', // Fallback: '[>]'
           },
         ],
       },
       {
-        name: 'Docker',
-        expanded: true,
+        name: 'Install Minimum Redmine',
+        expanded: false,
         commands: [
           {
-            name: 'Lösche Docker',
-            value: isWindows ? 'systeminfo' : 'uname -a',
-            description: 'Löscht alle Docker Container, Images und Volumes',
-            icon: '🗑️', // Fallback: '[DEL]'
+            name: 'Config Database',
+            value: isWindows
+              ? 'powershell  -NoProfile -Command "Set-Location C:\\ForgeRed\\TS_Scripts; npx ts-node .\\configDatabase.ts"'
+              : 'cd /d C:\\ForgeRed\\TS_Scripts && npx ts-node .\\configDatabase.ts',
+            description: 'Konfiguriert die Datenbank für Redmine',
+            icon: '🗑️',
           },
           {
-            name: 'Starte Docker',
-            value: isWindows ? 'tasklist' : 'ps aux',
-            description: 'Startet alle Docker Services',
-            icon: '▶️', // Fallback: '[>]'
+            name: 'Setting Redmine',
+            value: isWindows
+              ? 'powershell -NoProfile  -Command "Set-Location C:\\ForgeRed\\TS_Scripts; npx ts-node .\\settingRedmine.ts"'
+              : 'cd /d C:\\ForgeRed\\TS_Scripts && npx ts-node .\\settingRedmine.ts',
+            description: 'Installiere alle Setting für Redmine',
+            icon: '⚙️', // Fallback: '[>]'
+          },
+          {
+            name: 'Redmine Admin Login',
+            value: isWindows
+              ? 'powershell -NoProfile  -Command "Start-Process \'http://localhost:4762/login?username=admin\'"'
+              : 'xdg-open http://localhost:4762/login?username=admin',
+            description: 'Öffnet Redmine mit Admin-Login',
+            icon: '🔐',
+          },
+          {
+            name: 'Öffne phpMyAdmin',
+            value: isWindows
+              ? 'powershell -NoProfile  -Command "Start-Process \'http://localhost:9090\'"'
+              : 'xdg-open http://localhost:9090',
+            description: 'Öffnet phpMyAdmin',
+            icon: '🗄️',
           },
         ],
       },
