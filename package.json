@@ -12,11 +12,9 @@
     "build-prod": "npx @angular/cli build --configuration production",
     "watch": "npx @angular/cli build --watch --configuration development",
     "test": "npx @angular/cli test",
-    
     "electron": "npm run build-prod && npx tsc -p electron/tsconfig.json && npx electron .",
     "electron-dev": "concurrently \"ng serve\" \"wait-on http://localhost:4200 && electron .\"",
     "electron-only": "npx electron .",
-    
     "build-electron": "npm run build-prod && npx tsc -p electron/tsconfig.json",
     "dist": "npm run build-electron && npx electron-builder",
     "dist:win": "npm run build-electron && npx electron-builder --win",
@@ -43,6 +41,7 @@
     "@angular/compiler-cli": "^19.0.0",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^18.7.0",
+    "concurrently": "^9.2.0",
     "electron": "^32.0.0",
     "electron-builder": "^25.0.0",
     "jasmine-core": "~5.4.0",
@@ -51,7 +50,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.6.0"
+    "typescript": "~5.6.0",
+    "wait-on": "^8.0.3"
   },
   "build": {
     "appId": "com.projektfokus.forgeredterminal",
@@ -70,18 +70,25 @@
       {
         "from": "assets",
         "to": "assets",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "assets/icon.ico"
@@ -90,7 +97,10 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "icon": "assets/icon.icns",
@@ -100,19 +110,27 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "rpm",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "tar.gz",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "assets/icon.png",
@@ -132,10 +150,28 @@
       "shortcutName": "ForgeRed Terminal"
     },
     "deb": {
-      "depends": ["libgtk-3-0", "libnotify-bin", "libnss3", "libxss1", "libxtst6", "xdg-utils", "libatspi2.0-0", "libasound2"]
+      "depends": [
+        "libgtk-3-0",
+        "libnotify-bin",
+        "libnss3",
+        "libxss1",
+        "libxtst6",
+        "xdg-utils",
+        "libatspi2.0-0",
+        "libasound2"
+      ]
     },
     "rpm": {
-      "depends": ["gtk3", "libnotify", "nss", "libXScrnSaver", "libXtst", "xdg-utils", "at-spi2-atk", "alsa-lib"]
+      "depends": [
+        "gtk3",
+        "libnotify",
+        "nss",
+        "libXScrnSaver",
+        "libXtst",
+        "xdg-utils",
+        "at-spi2-atk",
+        "alsa-lib"
+      ]
     }
   }
 }

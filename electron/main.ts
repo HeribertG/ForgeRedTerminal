@@ -24,10 +24,9 @@ function createWindow(): void {
     icon: iconPath,
     title: 'ForgeRed Terminal',
     backgroundColor: '#1e1e1e',
-    show: false, // Erst zeigen wenn geladen
+    show: false,
   });
 
-  // Zeige Fenster wenn bereit
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
     if (!app.isPackaged) {
@@ -35,13 +34,11 @@ function createWindow(): void {
     }
   });
 
-  // Production vs Development
   if (app.isPackaged) {
-    // Production: Lade die gebaute Angular App
-    // KORRIGIERTER PFAD: Die Angular App liegt in dist/forge-red-terminal
+    // 🔧 KORRIGIERTER PFAD - Entfernt das doppelte "dist"
     const indexPath = path.join(
       __dirname,
-      '../dist/forge-red-terminal/index.html'
+      '../forge-red-terminal/index.html' // ← KORRIGIERT: Ein "dist" weniger
     );
 
     console.log('Loading index from:', indexPath);
@@ -51,31 +48,35 @@ function createWindow(): void {
     mainWindow.loadFile(indexPath).catch((err) => {
       console.error('Failed to load index.html:', err);
 
-      // Fallback: Versuche andere mögliche Pfade
+      // 🔧 VERBESSERTE FALLBACK-PFADE
       const fallbackPaths = [
+        // Relative Pfade zur aktuellen Struktur
+        path.join(__dirname, '../forge-red-terminal/index.html'),
+        path.join(__dirname, './forge-red-terminal/index.html'),
+        path.join(__dirname, '../../dist/forge-red-terminal/index.html'),
+
+        // Absolute Pfade als letzte Option
         path.join(
           process.resourcesPath,
           'app',
-          'dist',
           'forge-red-terminal',
           'index.html'
         ),
-        path.join(app.getAppPath(), 'dist', 'forge-red-terminal', 'index.html'),
-        path.join(__dirname, 'forge-red-terminal', 'index.html'),
+        path.join(app.getAppPath(), 'forge-red-terminal', 'index.html'),
       ];
 
       console.log('Trying fallback paths...');
       tryLoadFallbacks(fallbackPaths);
     });
 
-    // DevTools nur auf Anfrage öffnen
+    // DevTools Shortcut
     mainWindow.webContents.on('before-input-event', (event, input) => {
       if (input.control && input.shift && input.key.toLowerCase() === 'i') {
         mainWindow.webContents.toggleDevTools();
       }
     });
   } else {
-    // Development: Lade vom Dev-Server
+    // Development Mode
     mainWindow.loadURL('http://localhost:4200').catch((err) => {
       console.error('Failed to load dev server:', err);
     });
@@ -86,30 +87,41 @@ function createWindow(): void {
   });
 }
 
-// Hilfsfunktion für Fallback-Pfade
+// 🔧 VERBESSERTE FALLBACK-FUNKTION
 function tryLoadFallbacks(paths: string[]): void {
   if (paths.length === 0) {
-    console.error('No more fallback paths to try');
+    console.error('❌ No more fallback paths to try');
+    console.error('💡 Possible solutions:');
+    console.error('   1. Run: npm run build-prod');
+    console.error('   2. Check if dist/forge-red-terminal/index.html exists');
+    console.error('   3. Verify angular.json outputPath setting');
     return;
   }
 
   const currentPath = paths.shift()!;
-  console.log('Trying path:', currentPath);
+  console.log(`🔍 Trying path: ${currentPath}`);
+
+  // Prüfe ob Datei existiert
+  const fs = require('fs');
+  if (!fs.existsSync(currentPath)) {
+    console.log(`❌ Path does not exist: ${currentPath}`);
+    tryLoadFallbacks(paths);
+    return;
+  }
 
   mainWindow.loadFile(currentPath).catch((err) => {
-    console.error(`Failed to load ${currentPath}:`, err);
+    console.error(`❌ Failed to load ${currentPath}:`, err);
     tryLoadFallbacks(paths);
   });
 }
 
-// Single Instance Lock
+// Rest der Datei bleibt unverändert...
 const gotTheLock = app.requestSingleInstanceLock();
 
 if (!gotTheLock) {
   app.quit();
 } else {
   app.on('second-instance', () => {
-    // Wenn eine zweite Instanz gestartet wird, fokussiere das existierende Fenster
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
@@ -200,9 +212,7 @@ ipcMain.handle(
   }
 );
 
-// Hilfsfunktion für deutsche Zeichen - vereinfachte Version
 function fixGermanChars(text: string): string {
-  // Ersetze bekannte fehlerhafte Patterns
   let result = text
     .replace(/Datentr�ger/g, 'Datenträger')
     .replace(/Gr��e/g, 'Größe')
@@ -227,12 +237,11 @@ function mapCommandToPowerShell(command: string): string {
     case 'date':
       return 'Get-Date';
     default:
-      // Für unbekannte Befehle versuche CMD mit UTF-8
       return `cmd /c "chcp 65001 >nul & ${command}"`;
   }
 }
 
-// Alternative PowerShell-Implementation (für bessere Unicode-Unterstützung)
+// Alternative PowerShell-Implementation
 ipcMain.handle(
   'execute-powershell',
   async (event, command: string, workingDir: string) => {
@@ -244,7 +253,6 @@ ipcMain.handle(
         return;
       }
 
-      // PowerShell mit expliziter UTF-8 Ausgabe
       const powershellArgs = [
         '-NoProfile',
         '-NonInteractive',
