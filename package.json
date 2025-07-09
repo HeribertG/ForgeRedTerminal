@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "dist/electron/main.js",
   "description": "Terminal application built with Angular and Electron",
-  "author": "Projektfokus GmbH",
   "license": "MIT",
   "scripts": {
     "ng": "npx @angular/cli",
@@ -21,6 +20,11 @@
     "dist:mac": "npm run build-electron && npx electron-builder --mac",
     "dist:linux": "npm run build-electron && npx electron-builder --linux",
     "dist:all": "npm run build-electron && npx electron-builder --win --mac --linux"
+  },
+
+  "author": {
+    "name": "Projektfokus GmbH", 
+    "email": "support@projektfokus.ch"
   },
   "dependencies": {
     "@angular/animations": "^19.0.0",
