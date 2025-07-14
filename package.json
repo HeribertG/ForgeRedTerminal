@@ -11,15 +11,45 @@
     "build-prod": "npx @angular/cli build --configuration production",
     "watch": "npx @angular/cli build --watch --configuration development",
     "test": "npx @angular/cli test",
-    "electron": "npm run build-prod && npx tsc -p electron/tsconfig.json && npx electron .",
+    
+   
+    "clean": "rimraf dist release",
+    "build-angular": "npx @angular/cli build --configuration production",
+    "build-electron": "npx tsc -p electron/tsconfig.json",
+    "prebuild": "npm run clean",
+    "build:full": "npm run build-angular && npm run build-electron",
+    
+    
+    "electron": "npm run build:full && npx electron .",
     "electron-dev": "concurrently \"ng serve\" \"wait-on http://localhost:4200 && electron .\"",
     "electron-only": "npx electron .",
-    "build-electron": "npm run build-prod && npx tsc -p electron/tsconfig.json",
-    "dist": "npm run build-electron && npx electron-builder",
-    "dist:win": "npm run build-electron && npx electron-builder --win",
-    "dist:mac": "npm run build-electron && npx electron-builder --mac",
-    "dist:linux": "npm run build-electron && npx electron-builder --linux",
-    "dist:all": "npm run build-electron && npx electron-builder --win --mac --linux"
+    
+    
+    "dist": "npm run build:full && npx electron-builder",
+    "dist:win": "npm run build:full && npx electron-builder --win",
+    "dist:mac": "npm run build:full && npx electron-builder --mac",
+    "dist:linux": "npm run build:full && npx electron-builder --linux",
+    
+   
+    "dist:win-exe": "npm run build:full && npx electron-builder --win nsis",
+    "dist:win-portable": "npm run build:full && npx electron-builder --win portable",
+    "dist:win-msi": "npm run build:full && npx electron-builder --win msi",
+    "dist:win-all": "npm run build:full && npx electron-builder --win nsis --win portable --win msi",
+    
+    
+    "dist:linux-tar": "npm run build:full && npx electron-builder --linux tar.gz",
+    "dist:linux-appimage": "npm run build:full && npx electron-builder --linux AppImage",
+    "dist:linux-deb": "npm run build:full && npx electron-builder --linux deb",
+    "dist:linux-rpm": "npm run build:full && npx electron-builder --linux rpm",
+    "dist:linux-all": "npm run build:full && npx electron-builder --linux tar.gz --linux AppImage --linux deb --linux rpm",
+    
+   
+    "dist:mac-dmg": "npm run build:full && npx electron-builder --mac dmg",
+    "dist:mac-zip": "npm run build:full && npx electron-builder --mac zip",
+    "dist:mac-all": "npm run build:full && npx electron-builder --mac dmg --mac zip",
+    
+    
+    "dist:all": "npm run build:full && npx electron-builder --win --mac --linux"
   },
 
   "author": {
@@ -48,6 +78,7 @@
     "concurrently": "^9.2.0",
     "electron": "^32.0.0",
     "electron-builder": "^25.0.0",
+    "rimraf": "^5.0.0",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -91,11 +122,28 @@
         {
           "target": "portable",
           "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "msi",
+          "arch": [
             "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "ia32"
           ]
         }
       ],
-      "icon": "assets/icon.ico"
+      "icon": "assets/icon.ico",
+      "publisherName": "Projektfokus GmbH",
+      "verifyUpdateCodeSignature": false,
+      "requestedExecutionLevel": "asInvoker"
     },
     "mac": {
       "target": [
@@ -113,6 +161,12 @@
     "linux": {
       "target": [
         {
+          "target": "tar.gz",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
           "target": "AppImage",
           "arch": [
             "x64"
@@ -126,12 +180,6 @@
         },
         {
           "target": "rpm",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "tar.gz",
           "arch": [
             "x64"
           ]
@@ -151,7 +199,15 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "ForgeRed Terminal"
+      "shortcutName": "ForgeRed Terminal",
+      "runAfterFinish": true,
+      "menuCategory": "Development",
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico",
+      "installerHeaderIcon": "assets/icon.ico",
+      "deleteAppDataOnUninstall": false,
+      "perMachine": false,
+      "allowElevation": true
     },
     "deb": {
       "depends": [
