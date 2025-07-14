@@ -45,6 +45,20 @@ export class NavComponent implements OnInit {
         expanded: false,
         commands: [
           {
+            name: 'Docker Status',
+            value: isLinux ? 'systemctl status docker' : 'docker --version',
+            description: 'Zeigt Docker-Status an',
+            icon: '📊',
+          },
+          {
+            name: 'Docker Logs',
+            value: isLinux
+              ? 'journalctl -u docker --since "1 hour ago"'
+              : 'docker system events',
+            description: 'Zeigt Docker-Logs an',
+            icon: '📋',
+          },
+          {
             name: 'Lösche Docker',
             value: this.getDockerCleanupCommand(isWindows, isLinux),
             description: 'Löscht alle Docker Container, Images und Volumes',
@@ -189,7 +203,6 @@ export class NavComponent implements OnInit {
     ];
   }
 
-  // 🐳 Docker-Befehle (Platform-spezifisch)
   private getDockerCleanupCommand(
     isWindows: boolean,
     isLinux: boolean
@@ -197,6 +210,7 @@ export class NavComponent implements OnInit {
     if (isWindows) {
       return 'powershell -NoProfile -Command "Set-Location C:\\ForgeRed\\Docker; node docker_cleanup.js"';
     } else if (isLinux) {
+      // ✅ KORRIGIERT: Führe das Script aus dem korrekten Verzeichnis aus
       return 'cd /root/ForgeRed/Docker && node docker_cleanup.js';
     }
     return 'echo "Platform not supported"';
@@ -209,6 +223,7 @@ export class NavComponent implements OnInit {
     if (isWindows) {
       return 'cmd /c "cd /d C:\\ForgeRed\\Docker && node docker_run.js"';
     } else if (isLinux) {
+      // ✅ KORRIGIERT: Entfernt Windows-spezifische Parameter
       return 'cd /root/ForgeRed/Docker && node docker_run.js';
     }
     return 'echo "Platform not supported"';
@@ -218,12 +233,12 @@ export class NavComponent implements OnInit {
     if (isWindows) {
       return 'cmd /c "cd /d C:\\ForgeRed\\Docker && docker-compose up -d"';
     } else if (isLinux) {
-      return 'cd /root/ForgeRed/Docker && docker-compose up -d';
+      // ✅ KORRIGIERT: Moderne Docker Compose Syntax
+      return 'cd /root/ForgeRed/Docker && docker compose up -d';
     }
     return 'echo "Platform not supported"';
   }
 
-  // 🗄️ Redmine-Befehle (Platform-spezifisch)
   private getConfigDatabaseCommand(
     isWindows: boolean,
     isLinux: boolean
@@ -231,7 +246,7 @@ export class NavComponent implements OnInit {
     if (isWindows) {
       return 'powershell -NoProfile -Command "Set-Location C:\\ForgeRed\\TS_Scripts; npx ts-node .\\configDatabase.ts"';
     } else if (isLinux) {
-      // ✅ KORRIGIERT: Linux-Pfad ohne Windows-spezifische /d Parameter
+      // ✅ KORRIGIERT: Linux-Pfad ohne Windows-Parameter
       return 'cd /root/ForgeRed/TS_Scripts && npx ts-node ./configDatabase.ts';
     }
     return 'echo "Platform not supported"';
@@ -244,7 +259,7 @@ export class NavComponent implements OnInit {
     if (isWindows) {
       return 'powershell -NoProfile -Command "Set-Location C:\\ForgeRed\\TS_Scripts; npx ts-node .\\settingRedmine.ts"';
     } else if (isLinux) {
-      // ✅ KORRIGIERT: Linux-Pfad ohne Windows-spezifische /d Parameter
+      // ✅ KORRIGIERT: Linux-Pfad ohne Windows-Parameter
       return 'cd /root/ForgeRed/TS_Scripts && npx ts-node ./settingRedmine.ts';
     }
     return 'echo "Platform not supported"';
@@ -254,7 +269,7 @@ export class NavComponent implements OnInit {
     if (isWindows) {
       return 'powershell -NoProfile -Command "Start-Process \'http://localhost:4762/login?username=admin\'"';
     } else if (isLinux) {
-      // ✅ Linux-spezifisch: xdg-open oder firefox als Fallback
+      // ✅ KORRIGIERT: Linux Browser-Befehle mit Fallback
       return 'xdg-open http://localhost:4762/login?username=admin || firefox http://localhost:4762/login?username=admin';
     }
     return 'echo "Platform not supported"';
@@ -264,7 +279,7 @@ export class NavComponent implements OnInit {
     if (isWindows) {
       return 'powershell -NoProfile -Command "Start-Process \'http://localhost:9090\'"';
     } else if (isLinux) {
-      // ✅ Linux-spezifisch: xdg-open oder firefox als Fallback
+      // ✅ KORRIGIERT: Linux Browser-Befehle mit Fallback
       return 'xdg-open http://localhost:9090 || firefox http://localhost:9090';
     }
     return 'echo "Platform not supported"';
